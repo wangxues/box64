@@ -555,8 +555,8 @@ void jump_to_next_jmped(dynarec_rv64_t* dyn, uintptr_t ip, int reg, int ninst, i
 
         // 比较 GPC 是否匹配
         // BNE_MARK(xRIP, x4);
-        BNE(xRIP, x4, 4);
-        JALR((dyn->insts[ninst].x64.has_callret ? xRA : xZR), x5);
+        BNE(xRIP, x3, 4);
+        JALR((dyn->insts[ninst].x64.has_callret ? xRA : xZR), x4);
 
         TABLE64(x3, tbl);
         if (rv64_xtheadbb) {
