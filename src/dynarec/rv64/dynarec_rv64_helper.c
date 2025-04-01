@@ -635,7 +635,7 @@ void jump_to_next_jmped(dynarec_rv64_t* dyn, uintptr_t ip, int reg, int ninst, i
             // --- 更新查找表 ---
             SD(xRIP, x5, 0);            // 存储当前 GPC
             SD(x2, x5, 8);              // 存储新 HPC
-            
+
             // GPC不匹配，miss计数器++
             uintptr_t miss_addr = getLookupTableMissAddr();
             MOV64x(x3, miss_addr);   //x3保存miss计数器地址
@@ -731,8 +731,8 @@ void jump_to_next(dynarec_rv64_t* dyn, uintptr_t ip, int reg, int ninst, int is3
     } else {
         uintptr_t p = getJumpTableAddress64(ip);
         MAYUSE(p);
-        GETIP_(ip, x3);
         TABLE64(x3, p);
+        GETIP_(ip);
         LD(x2, x3, 0);
     }
     CLEARIP();
