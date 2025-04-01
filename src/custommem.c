@@ -52,6 +52,9 @@ static uintptr_t           box64_jmptbldefault0[1<<JMPTABL_SHIFT0];
 #define LOOKUP_TABLE_SIZE 4096
 static uintptr_t box64_lookup_table[LOOKUP_TABLE_SIZE][2] = {0};
 
+uintptr_t box64_lookup_hit = 0;
+uintptr_t box64_lookup_miss = 0;
+
 // lock addresses
 KHASH_SET_INIT_INT64(lockaddress)
 static kh_lockaddress_t    *lockaddress = NULL;
@@ -1280,9 +1283,54 @@ uintptr_t getJumpTable32()
     #endif
 }
 
+// uintptr_t getLookupTable() {
+//     printf("box64_lookup_table address: %p\n", box64_lookup_table);
+//     return (uintptr_t)box64_lookup_table;
+// }
+
 uintptr_t getLookupTable() {
-    printf("box64_lookup_table address: %p\n", box64_lookup_table);
+    // printf("box64_lookup_table address: %p\n", box64_lookup_table);
+    // printf("box64_lookup_table[0][0] address: %p\n",  (void*)&box64_lookup_table[0][0]);
+    // printf("box64_lookup_table[4095][1] address: %p\n",  (void*)&box64_lookup_table[4095][1]);
     return (uintptr_t)box64_lookup_table;
+}
+
+uintptr_t getLookupTableHitAddr() {
+    return (uintptr_t)&box64_lookup_hit;
+}
+
+uintptr_t getLookupTableMissAddr() {
+    return (uintptr_t)&box64_lookup_miss;
+}
+
+void print_LookupTable_stats() {
+    uintptr_t hit = box64_lookup_hit;
+    uintptr_t miss = box64_lookup_miss;
+    uintptr_t total = hit + miss;
+
+    int used = 0;
+    for (int i = 0; i < LOOKUP_TABLE_SIZE; ++i) {
+        if (box64_lookup_table[i][0] != 0)
+            ++used;
+    }
+
+    float hit_rate = total ? (100.0f * hit / total) : 0.0f;
+    float usage_rate = 100.0f * used / LOOKUP_TABLE_SIZE;
+
+    // dynarec_log(LOG_NONE, "======= Lookup Table Stats =======\n");
+    // dynarec_log(LOG_NONE, "  Hit count     : %lu\n", hit);
+    // dynarec_log(LOG_NONE, "  Miss count    : %lu\n", miss);
+    // dynarec_log(LOG_NONE, "  Total lookups : %lu\n", total);
+    // dynarec_log(LOG_NONE, "  Hit rate      : %.2f%%\n", hit_rate);
+    // dynarec_log(LOG_NONE, "  Used entries  : %d / %d (%.2f%%)\n", used, LOOKUP_TABLE_SIZE, usage_rate);
+    // dynarec_log(LOG_NONE, "==================================\n");
+    printf("======= Lookup Table Stats =======\n");
+    printf("  Hit count     : %lu\n", hit);
+    printf("  Miss count    : %lu\n", miss);
+    printf("  Total lookups : %lu\n", total);
+    printf("  Hit rate      : %.2f%%\n", hit_rate);
+    printf("  Used entries  : %d / %d (%.2f%%)\n", used, LOOKUP_TABLE_SIZE, usage_rate);
+    printf("==================================\n");
 }
 
 uintptr_t getJumpTableAddress64(uintptr_t addr)

@@ -2608,5 +2608,6 @@ int emulate(x64emu_t* emu, elfheader_t* elf_header)
     }
 #endif
 
+    print_LookupTable_stats(); //打印lookup_table的统计信息
     return ret;
 }
