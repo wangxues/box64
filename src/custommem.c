@@ -54,6 +54,7 @@ static uintptr_t box64_lookup_table[LOOKUP_TABLE_SIZE][2] = {0};
 
 uintptr_t box64_lookup_hit = 0;
 uintptr_t box64_lookup_miss = 0;
+uintptr_t box64_call_counter = 0;
 
 // lock addresses
 KHASH_SET_INIT_INT64(lockaddress)
@@ -1303,9 +1304,14 @@ uintptr_t getLookupTableMissAddr() {
     return (uintptr_t)&box64_lookup_miss;
 }
 
+uintptr_t getCallCounterAddr() {
+    return (uintptr_t)&box64_call_counter;
+}
+
 void print_LookupTable_stats() {
     uintptr_t hit = box64_lookup_hit;
     uintptr_t miss = box64_lookup_miss;
+    uintptr_t call = box64_call_counter;
     uintptr_t total = hit + miss;
 
     int used = 0;
@@ -1330,6 +1336,7 @@ void print_LookupTable_stats() {
     printf("  Total lookups : %lu\n", total);
     printf("  Hit rate      : %.2f%%\n", hit_rate);
     printf("  Used entries  : %d / %d (%.2f%%)\n", used, LOOKUP_TABLE_SIZE, usage_rate);
+    printf("  Indirect Call count    : %lu\n", call);
     printf("==================================\n");
 }
 

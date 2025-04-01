@@ -1938,4 +1938,13 @@ uintptr_t dynarec64_AVX_F3_0F(dynarec_rv64_t* dyn, uintptr_t addr, uintptr_t ip,
 #define VECTOR_LOAD_VMASK(mask, s1, multiple) \
     vector_loadmask(dyn, ninst, VMASK, mask, s1, multiple)
 
+#define INC_COUNTER_BY_REGS(GETADDR_FUNC, ADDR_REG, TMP_REG)   \
+    do {                                                       \
+        uintptr_t addr = GETADDR_FUNC();                       \
+        MOV64x(ADDR_REG, addr);                                \
+        LD(TMP_REG, ADDR_REG, 0);                              \
+        ADDI(TMP_REG, TMP_REG, 1);                             \
+        SD(TMP_REG, ADDR_REG, 0);                              \
+    } while (0)
+
 #endif //__DYNAREC_RV64_HELPER_H__

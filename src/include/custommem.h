@@ -52,6 +52,7 @@ uintptr_t getJumpTable32(void);
 uintptr_t getLookupTable(void);
 uintptr_t getLookupTableHitAddr(void);
 uintptr_t getLookupTableMissAddr(void);
+uintptr_t getCallCounterAddr(void);
 void printLookupTable(void);
 // void printHitRate(void);
 void print_LookupTable_stats(void);
