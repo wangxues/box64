@@ -708,8 +708,8 @@ void jump_to_next(dynarec_rv64_t* dyn, uintptr_t ip, int reg, int ninst, int is3
     } else {
         uintptr_t p = getJumpTableAddress64(ip);
         MAYUSE(p);
-        GETIP_(ip, x3);
         TABLE64(x3, p);
+        GETIP_(ip);
         LD(x2, x3, 0);
     }
     CLEARIP();

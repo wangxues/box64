@@ -1491,7 +1491,7 @@ uintptr_t dynarec64_00_3(dynarec_rv64_t* dyn, uintptr_t addr, uintptr_t ip, int 
                         SD(xRIP, xSP, 8);
                     }
                     PUSH1z(xRIP);
-                    jump_to_next(dyn, 0, ed, ninst, rex.is32bits);
+                    jump_to_next_jmped(dyn, 0, ed, ninst, rex.is32bits);
                     MARK;
                     if (box64_dynarec_callret && dyn->vector_sew != VECTOR_SEWNA)
                         vector_vsetvli(dyn, ninst, x3, dyn->vector_sew, VECTOR_LMUL1, 1);
