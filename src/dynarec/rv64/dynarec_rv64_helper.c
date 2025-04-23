@@ -543,7 +543,7 @@ void jump_to_next_jmped(dynarec_rv64_t* dyn, uintptr_t ip, int reg, int ninst, i
         // SRLI(x3, x3, 48);//取xRIP的低12位并左移4位，放到x3
 
         // 计算索引：xRIP 低第15-低第4位 << 4（最低位是第0位）
-        SLRI(x3, xRIP, 4);  //取xRIP并右移4位。比之前多了一条移位指令。但不会导致查找表实际缩小<->防止16字节对齐，既低4位都为0
+        SRLI(x3, xRIP, 4);  //取xRIP并右移4位。比之前多了一条移位指令。但不会导致查找表实际缩小<->防止16字节对齐，既低4位都为0
         SLLI(x3, x3, 52); 
         SRLI(x3, x3, 48);
 
