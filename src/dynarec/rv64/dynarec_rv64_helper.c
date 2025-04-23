@@ -538,9 +538,14 @@ void jump_to_next_jmped(dynarec_rv64_t* dyn, uintptr_t ip, int reg, int ninst, i
         MAYUSE(tbl);
 
         // --- 快速路径开始 ---
-        // 计算索引：xRIP 低12位 <<4
-        SLLI(x3, xRIP, 52);
-        SRLI(x3, x3, 48);//取xRIP的低12位并左移4位，放到x3
+        // // 计算索引：xRIP 低12位 <<4
+        // SLLI(x3, xRIP, 52);
+        // SRLI(x3, x3, 48);//取xRIP的低12位并左移4位，放到x3
+
+        // 计算索引：xRIP 低第15-低第4位 << 4（最低位是第0位）
+        SLRI(x3, xRIP, 4);  //取xRIP并右移4位。比之前多了一条移位指令。但不会导致查找表实际缩小<->防止16字节对齐，既低4位都为0
+        SLLI(x3, x3, 52); 
+        SRLI(x3, x3, 48);
 
         // 加载查找表基址到 x4
         uintptr_t lookup_table = getLookupTable();
@@ -556,8 +561,8 @@ void jump_to_next_jmped(dynarec_rv64_t* dyn, uintptr_t ip, int reg, int ninst, i
         // 比较 GPC 是否匹配
         // BNE_MARK(xRIP, x4);
         BNE(xRIP, x3, 12);
-        LD(x4, x5, 8);               // x4 = 表中 HPC
-        JALR((dyn->insts[ninst].x64.has_callret ? xRA : xZR), x4);
+        LD(x2, x5, 8);               // x2 = 表中 HPC
+        JALR((dyn->insts[ninst].x64.has_callret ? xRA : xZR), x2);
 
         TABLE64(x3, tbl);
         if (rv64_xtheadbb) {
